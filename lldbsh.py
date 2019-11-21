@@ -2,7 +2,7 @@ import lldb
 import subprocess
 
 def sh(debugger, command, result, dict):
-  lldb_cmd,shell_cmd = map(x->x.strip(), command.split("|"))
+  lldb_cmd,shell_cmd = map(lambda x: x.strip(), command.split("|"))
 
   interpreter = debugger.GetCommandInterpreter()
   res = lldb.SBCommandReturnObject()
@@ -24,7 +24,7 @@ def sh(debugger, command, result, dict):
       outs, errs = proc.communicate()
 
 def __lldb_init_module (debugger, dict):
-  # I'm sure there's a less hacky way to do this...
+  res = lldb.SBCommandReturnObject()
   interpreter = debugger.GetCommandInterpreter()
   interpreter.HandleCommand('command script delete sh', res)
   debugger.HandleCommand('command script add -f lldbsh.sh sh ')
