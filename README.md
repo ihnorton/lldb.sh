@@ -12,4 +12,11 @@ Make your LLDB experience 26% better* with one weird trick: pipe the output of l
   SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 ```
 
+Pagers are also supported! (but, as yet, the subprocess is not killable):
+
+```
+(lldb) sh image list | less
+...
+```
+
 \* does not improve symbolication speed :(
