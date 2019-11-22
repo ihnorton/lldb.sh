@@ -2,7 +2,8 @@ import lldb
 import subprocess
 
 def sh(debugger, command, result, dict):
-  lldb_cmd,shell_cmd = map(lambda x: x.strip(), command.split("|"))
+  commands = command.split("|")
+  lldb_cmd = commands[0]
 
   interpreter = debugger.GetCommandInterpreter()
   res = lldb.SBCommandReturnObject()
@@ -13,13 +14,26 @@ def sh(debugger, command, result, dict):
   if not res.GetOutput():
       return
 
-  # Not sure what the underlying buffer is for HandleCommand, but
-  # maybe some check/optim for really large output
+  if len(commands) == 1:
+    # `sh command` is equivalent to `command`
+    print(res.GetOutput())
+    return
+  elif len(commands) == 2:
+    # TODO support chaining?
+    shell_cmd = commands[1]
+
+  # TODO: Not sure what the underlying buffer is for HandleCommand, but
+  # ideally do some check/optim for really large output.
   output = res.GetOutput().encode('UTF-8')
   proc = subprocess.Popen(shell_cmd, shell=True, stdin=subprocess.PIPE)
+
+  # TODO?
+  # Not using a timer here allows piping to a pager. However,
+  # it also means that the shell-out process may not be killable.
   try:
-      out, errs = proc.communicate(output, timeout=1)
-  except subprocess.TimeoutExpired:
+      out, errs = proc.communicate(output)
+  except:
+      print("Unexpected exit, killing subprocess")
       proc.kill()
       outs, errs = proc.communicate()
 
