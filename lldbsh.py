@@ -5,6 +5,10 @@ def sh(debugger, command, result, internal_dict):
   commands = command.split("|")
   lldb_cmd = commands[0]
 
+  if lldb_cmd == '':
+      print("No LLDB command given. Use: 'sh <LLDB command> | <shell command>'")
+      return
+
   interpreter = debugger.GetCommandInterpreter()
   rto = lldb.SBCommandReturnObject()
   interpreter.HandleCommand(lldb_cmd, rto)
