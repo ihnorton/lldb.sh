@@ -2,7 +2,7 @@ import lldb
 import subprocess
 
 def sh(debugger, command, result, internal_dict):
-  commands = command.split("|")
+  commands = command.split("|", 1)
   lldb_cmd = commands[0]
 
   if lldb_cmd == '':
