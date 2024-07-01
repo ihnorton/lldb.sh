@@ -1,3 +1,5 @@
+# Code is available under MIT license
+
 import lldb
 import subprocess
 
